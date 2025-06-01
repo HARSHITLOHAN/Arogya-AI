@@ -11,41 +11,7 @@ app = Flask(__name__)
 
 
 
-""""
-NOSE = 0
-  LEFT_EYE_INNER = 1
-  LEFT_EYE = 2
-  LEFT_EYE_OUTER = 3
-  RIGHT_EYE_INNER = 4
-  RIGHT_EYE = 5
-  RIGHT_EYE_OUTER = 6
-  LEFT_EAR = 7
-  RIGHT_EAR = 8
-  MOUTH_LEFT = 9
-  MOUTH_RIGHT = 10
-  LEFT_SHOULDER = 11
-  RIGHT_SHOULDER = 12
-  LEFT_ELBOW = 13
-  RIGHT_ELBOW = 14
-  LEFT_WRIST = 15
-  RIGHT_WRIST = 16
-  LEFT_PINKY = 17
-  RIGHT_PINKY = 18
-  LEFT_INDEX = 19
-  RIGHT_INDEX = 20
-  LEFT_THUMB = 21
-  RIGHT_THUMB = 22
-  LEFT_HIP = 23
-  RIGHT_HIP = 24
-  LEFT_KNEE = 25
-  RIGHT_KNEE = 26
-  LEFT_ANKLE = 27
-  RIGHT_ANKLE = 28
-  LEFT_HEEL = 29
-  RIGHT_HEEL = 30
-  LEFT_FOOT_INDEX = 31
-  RIGHT_FOOT_INDEX = 32
-"""
+
 diz = {"curl":0, "squat":0, "flessioni":0, "plank":0}
 action = None
 reps = 0
@@ -130,9 +96,6 @@ def stats():
     return render_template('stats.html', email=email,age=age, height=height, weight=weight, gender=gender,kcal=kcal,diz=diz)
 
 
-"""Return = risposta HTTP contenente un flusso di dati video in formato multipart/x-mixed-replace --> flusso di dati che verrà
-aggiornato costantemente sostituendo ogni immagine precedente.
-"""
 @app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -162,16 +125,15 @@ def draw_styled_landmarks(image, results):
 def extract_keypoints(results):
     pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
     try:
-        #print(len(results.pose_landmarks.landmark))
+        
         if float(results.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_FOOT_INDEX].visibility) <= 0.001:
-            #print("piede non visibile")
+            
             pass
         else:
-            #print("piede visibile ",results.pose_landmarks.landmark[mp_holistic.PoseLandmark.LEFT_FOOT_INDEX]) 
-            #print("corretto ",results.pose_landmarks.landmark)
+            
             pass
     except:
-        #print("errore ", results.pose_landmarks)
+        
         pass
     return np.concatenate([pose])
 
@@ -224,13 +186,13 @@ model.add(Dense(actions.shape[0], activation='softmax'))
 #LOAD WEIGHTS
 model.load_weights('action.h5')
 
-def calculate_angle(a,b,c): # teh tree points to create angles
-    a = np.array(a) # We convert all to numpy arrays
+def calculate_angle(a,b,c): 
+    a = np.array(a) 
     b = np.array(b)
     c = np.array(c)
     radiants = np.arctan2(c[1]-b[1],c[0]-b[0]) - np.arctan2(a[1]-b[1],a[0]-b[0])
     angle= np.abs(radiants*180.0/np.pi)
-    if angle > 180:# convert angle between 0 and 180    
+    if angle > 180:  
         angle = 360 - angle
     return angle 
 
