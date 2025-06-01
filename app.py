@@ -77,7 +77,7 @@ def gym():
     weight = request.args.get('weight')
 
     if request.method == 'POST':
-        #return redirect("/")
+        
         return redirect(url_for('stats', email=email, age=age, height=height, weight=weight,gender=gender))
     return render_template('gym.html', email=email, age=age, height=height, weight=weight, diz=diz,gender=gender)
 
@@ -101,15 +101,15 @@ def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-mp_holistic = mp.solutions.holistic # Holistic model
-mp_drawing = mp.solutions.drawing_utils # Drawing utilities
+mp_holistic = mp.solutions.holistic 
+mp_drawing = mp.solutions.drawing_utils 
 mp_pose = mp.solutions.pose
 def mediapipe_detection(image, model):
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) # COLOR CONVERSION BGR 2 RGB
-    image.flags.writeable = False                  # Image is no longer writeable
-    results = model.process(image)                 # Make prediction
-    image.flags.writeable = True                   # Image is now writeable 
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR) # COLOR COVERSION RGB 2 BGR
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
+    image.flags.writeable = False                  
+    results = model.process(image)                 
+    image.flags.writeable = True                   
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR) 
     return image, results
 
 def draw_styled_landmarks(image, results):
@@ -205,7 +205,7 @@ def compute_kcal(sex,kg,exercize):
     else:
         MET = METS_WOMAN
     kcal_1m = (MET * 3.5 * float(kg)) / 200 # equivalent to 25 exercise 
-     ##25 : kcal_1m = 36 : y
+    
     return round((kcal_1m * diz[exercize])/25,1)
    
 
@@ -256,14 +256,13 @@ def gen_frames():
  
     cap = cv2.VideoCapture(0)
 
-    # Set mediapipe model. 'with' allows to access our holistic model
-    #min_detection_condifence = our initial detection. So how mediapipe holistic works? --> makes an initial detection and then fromt here it just track the keypoints
+    
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         while cap.isOpened():
             ret, frame = cap.read()
-            #frame = imutils.resize(frame, width=1280) #capire se in pc diversi è uguale la risoluzione.
+           
             
-            # during countdown: only webcam shown (no detection)
+            
             if show_webcam_only and time.time() - start_time < countdown:
                 ret, jpeg = cv2.imencode('.jpg', frame)
                 frame = jpeg.tobytes()
@@ -277,18 +276,18 @@ def gen_frames():
 
             keypoints = extract_keypoints(results)
             
-            #print("keypoint", keypoints)
+            
             sequence.append(keypoints)
             sequence = sequence[-30:]
             if check_visibility(results):
-                #msg = "Ok"
+                
                 if len(sequence) == 30  :
                 
                     res = model.predict(np.expand_dims(sequence, axis=0))[0]
                     if res[np.argmax(res)] > threshold:
                         action = actions[np.argmax(res)]
                         if action != 'null':
-                            #diz[action] += 1
+                            
                             actions_state.append(action)
                             if action != actions_state[-2]:
                                 counter = 0
@@ -361,10 +360,10 @@ def gen_frames():
                 msg = "⚠️Please move away from the camera a bit"
 
 
-            #conversione: trasmissione in formato compatibile con il protocollo di libreria Flask-SocketIO
+           
             ret, jpeg = cv2.imencode('.jpg', image)
             frame = jpeg.tobytes()
-            #generatore di ogni singolo frame del video in formato jpeg : visualizzare lo stream video
+            
             yield (b'--frame\r\n' 
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
