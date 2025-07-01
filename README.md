@@ -1,4 +1,5 @@
 # Arogya-AI
+Engineer of real-world AI solutions, driven by curiosity, built with precision, and always improving.
 Your digital personal trainer
 
 Arogya AI tracks your body movements throughout a workout. It will help correct for posture, keep track of your reps and make sure you get fit the right way.
